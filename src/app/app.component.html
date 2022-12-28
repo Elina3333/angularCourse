@@ -1,62 +1,39 @@
 <div class="container">
-  <form class="card" [formGroup] = "form" (ngSubmit)="submit()">
-    <h1>Angular Forms</h1>
+  <h1>Angular HttpClient</h1>
+
+  <div class="card">
     <div class="form-control">
-      <label>Email</label>
-      <input type="text" placeholder="Email" formControlName="email">
-      <div class="validation" *ngIf="form.controls['email'].invalid && form.controls['email'].touched">
-        <small *ngIf="form.controls['email'].errors?.required">
-          Email is required
-        </small>
-        <small *ngIf="form.controls['email'].errors?.email">
-          Email is incorrect
-        </small>
-        <small *ngIf="form.controls['email'].errors?.restrictedEmails">
-          Email is forbidden
-        </small>
-        <small *ngIf="form.controls['email'].errors?.uniqEmail">
-          Email is already used
-        </small>
+      <input [(ngModel)]="title" type="text" placeholder="Название">
+    </div>
+    <button class="btn" (click)="addToDo()">Добавить</button>
+    <button class="btn" (click)="fetchToDos()">Загрузить</button>
+  </div>
+
+  <hr>
+
+  <p *ngIf="error else todosBlock" class="error">{{error}}</p>
+
+  <ng-template #todosBlock>
+    <div *ngIf="!loading else loader">
+      <div *ngIf="todos.length; else noToDos">
+        <div class="card" *ngFor="let todo of todos">
+          <p>
+            <span [class.completed]="todo.completed">{{todo.title}}</span>
+            <span>
+        <button class="btn btn-danger" (click)="removeToDo(todo.id!)">Удалить</button>
+        <button class="btn" [disabled]="todo.completed" (click)="completeTodo(todo.id!)">Завершить</button>
+      </span>
+          </p>
+        </div>
       </div>
     </div>
-    <div class="form-control">
-      <label>Пароль</label>
-      <input type="password" placeholder="Пароль" formControlName="password">
-      <div class="validation" *ngIf="form.controls['password'].invalid && form.controls['password'].touched">
-        <small *ngIf="form.controls['password'].errors?.required">
-          Password is required
-        </small>
-        <small *ngIf="form.controls['password'].errors?.minlength">
-          Password should be equal or longer 6 symbols
-        </small>
-      </div>
-    </div>
-    <div class="card" formGroupName = 'address'>
-      <h2>Адрес</h2>
-      <div class="form-control">
-        <label>Страна</label>
-        <select formControlName="country">
-          <option value="ru">Россия</option>
-          <option value="ua">Украина</option>
-          <option value="by">Беларусь</option>
-        </select>
-      </div>
-      <div class="form-control">
-        <input type="text" formControlName="city" placeholder="Город">
-      </div>
-      <button class="btn" type="button" (click)="setCapital()">Выбрать столицу</button>
-    </div>
-    <div class="card">
-      <h2>Ваши навыки</h2>
-      <button class="btn" type="button" (click)="addSkill()">Добавить умение</button>
-      <input type="text" [(ngModel)]="skill" [ngModelOptions]="{standalone: true}" placeholder="Skill...">
-      <div class="form-control"  *ngFor="let control of form.controls['skills'].value; let idx = index">
-        <label>Skill {{idx + 1}}</label>
-        <label>{{control}}</label>
-      </div>
-    </div>
-    <button class="btn" [disabled]="form.invalid" type="submit">Отправить</button>
-  </form>
+    <ng-template #loader>
+      <p>Loading...</p>
+    </ng-template>
+    <ng-template #noToDos>
+      <p>There are no items in your ToDo list</p>
+    </ng-template>
+  </ng-template>
 </div>
 
 
